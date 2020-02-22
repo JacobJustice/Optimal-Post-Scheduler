@@ -19,14 +19,15 @@ reddit = praw.Reddit(client_id=client_id
 
 desired_subreddit = input("What subreddit would you like to check?  ")
 many_posts = int(input("How many posts do you want to check?  "))
+timeframe = input("For how long do you want to check? (hour, day, week, month, year, all)  ")
 
-# make subreddit object and prepare to get the top 100 posts
+# make subreddit object and prepare to get the top posts
 subreddit = reddit.subreddit(desired_subreddit)
-top_posts = subreddit.top('month', limit=many_posts)
+top_posts = subreddit.top(timeframe, limit=many_posts)
 
-print("Checking the top", many_posts,"posts of the month on ", desired_subreddit, "...")
+print("Checking the top", many_posts,"posts of the " + timeframe + " on r/" + desired_subreddit, "...")
 
-#get top 1000 submissions
+#get top submissions
 submissions = [submission for submission in top_posts]
 
 weekdays = [
@@ -63,12 +64,16 @@ for i, day in enumerate(days_hours):
         if hour > days_hours[best_time[0]][best_time[1]]:
             best_time = (i,j)
 
-print("The best time to post in r/pics is ", weekdays[best_time[0]], "around", best_time[1]+1)
+
+print("The best time to post in r/"+ desired_subreddit, "is", weekdays[best_time[0]], "around", best_time[1]+1)
 
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(10,4))
-plt.title("Day and Hour of Top " + str(len(submissions)) + " Submissions on r/" + desired_subreddit)
+if timeframe != 'all':
+    plt.title("Submission Time of Top " + str(len(submissions)) + " Submissions of the " + timeframe + " on r/" + desired_subreddit)
+else:
+    plt.title("Submission Time of Top " + str(len(submissions)) + " Submissions of all time on r/" + desired_subreddit)
 
 plt.hist2d(list_of_hours, list_of_days, bins=[range(24),range(8)])
 
@@ -77,11 +82,8 @@ plt.colorbar().set_label('Number of top posts')
 plt.xlabel('Hour of the day (24hr)')
 plt.xticks(range(24), [x for x in range(1,25)])
 
-plt.ylabel('Day of the week', verticalalignment='center')
+#plt.ylabel('Day of the week', verticalalignment='center')
 plt.yticks([y+.5 for y in range(7)],labels=[weekdays[y] for y in range(0,7)])
-#plt.ylim([0,7])
-
-#plt.grid(True)
 
 plt.show()
 
