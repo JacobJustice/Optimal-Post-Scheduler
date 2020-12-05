@@ -59,7 +59,7 @@ for submission in submissions:
 # 0-indexing
 best_time = (0,0)
 for i, day in enumerate(days_hours):
-    print(weekdays[i], day)
+    print(weekdays[i] + "   ", day, sep='\t')
     for j, hour in enumerate(day):
         if hour > days_hours[best_time[0]][best_time[1]]:
             best_time = (i,j)
